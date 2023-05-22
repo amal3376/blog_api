@@ -6,6 +6,25 @@
 
 #### MySQL
 
+To login to MYSQL, run the following commands
+
+```bash
+mysql -u root #if root has no password
+mysql -u root -p #if root has password
+```
+Create Database, user and password
+
+```mysql
+Create DATABASE blog;
+CREATE USER 'blog_user'@'localhost' IDENTIFIED BY 'blog_password';
+GRANT ALL PRIVILEGES ON blog.* TO 'blog_user'@'localhost';
+```
+Check it works by logging into the database:
+
+```bash
+mysql blog -u blog_user -p
+```
+
 #### PostgreSQL
 
 1. Create Database, User and Password
