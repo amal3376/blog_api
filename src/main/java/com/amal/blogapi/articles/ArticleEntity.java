@@ -15,6 +15,8 @@ public class ArticleEntity extends BaseEntity {
     @Column(nullable = false, length = 200)
     String title;
     String subtitle;
+
+    //fthgf
     @Column(nullable = false, length = 8000)
     String body;
 //    String[] tagList; //TODO: Implement this
