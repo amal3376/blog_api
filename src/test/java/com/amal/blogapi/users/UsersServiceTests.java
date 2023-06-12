@@ -18,7 +18,7 @@ public class UsersServiceTests {
             var modelMapper = new ModelMapper();
             usersService= new UsersService(usersRepository,modelMapper);
         }
-        return usersService;0000000000000000
+        return usersService;
     }
 
     @Test
