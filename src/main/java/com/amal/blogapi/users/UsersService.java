@@ -4,17 +4,26 @@ import com.amal.blogapi.users.dto.CreateUserDTO;
 import com.amal.blogapi.users.dto.LoginUserDTO;
 import com.amal.blogapi.users.dto.UserReponseDTO;
 //import lombok.var;
+//import lombok.var;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UsersService {
     private  final  UsersRepository usersRepository;
     public final ModelMapper modelMapper;
+    private final PasswordEncoder passwordEncoder;
 
-    public UsersService(UsersRepository usersRepository, ModelMapper modelMapper){
+    public UsersService(
+            @Autowired UsersRepository usersRepository,
+            @Autowired ModelMapper modelMapper,
+            @Autowired PasswordEncoder passwordEncoder
+    ){
         this.usersRepository= usersRepository;
         this.modelMapper = modelMapper;
+        this.passwordEncoder= passwordEncoder;
     }
 
     public UserReponseDTO createUser(CreateUserDTO createUserDTO){
@@ -22,6 +31,8 @@ public class UsersService {
         //TODO: Validate Email
         //TODO: Check if the username already exists
         var newUserEntity = modelMapper.map(createUserDTO, UserEntity.class);
+        newUserEntity.setPassword(passwordEncoder.encode(createUserDTO.getPassword()));
+
         var savedUser = usersRepository.save(newUserEntity);
         var userResponseDTO = modelMapper.map(savedUser, UserReponseDTO.class);
 
@@ -44,7 +55,8 @@ public class UsersService {
             throw new UserNotFoundException(loginUserDTO.getUsername());
         }
         //TODO: Encrypt Password
-        if (!userEntity.getPassword().equals(loginUserDTO.getPassword())){
+        var passMatch = passwordEncoder.matches(loginUserDTO.getPassword(),userEntity.getPassword());
+        if (!passMatch){
             throw new IllegalArgumentException("Incorrect password");
         }
         var userResponseDTO = modelMapper.map(userEntity,UserReponseDTO.class);
